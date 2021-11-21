@@ -1,7 +1,7 @@
 # TEST1_20203145
 20203145
 
-(1)getopt
+(1)getopts
 
 -> getopts 명령어 : 옵션 해석 작업을 쉽게 도와주는 명령어 이다.  getopts 명령은 short 옵션을 처리한다.
 -> getopts 명령에서 사용되는 optstring, varname 과 OPTIND가 있다. 
