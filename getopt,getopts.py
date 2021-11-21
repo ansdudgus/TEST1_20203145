@@ -20,3 +20,4 @@ short 옵션 지정은 -o, long 옵션 지정은 -l
  -> getopts 명령에서 사용되는 optstring, varname, 1
  -> shell이 처음 실행되면 1 값은 1을 가리키고, getopts 명령이 실행될 떄 마다 다음 옵션의 index값을 가리킨다.
  -> shell이 처음 실행되면 '1' 값은 1을 가리키고, getopts 명령이 실행될 떄 마다 다음 옵션의 index값을 가리킨다.
+  -----> '1' = OPTIND
