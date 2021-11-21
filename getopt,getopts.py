@@ -21,3 +21,5 @@ short 옵션 지정은 -o, long 옵션 지정은 -l
  -> shell이 처음 실행되면 1 값은 1을 가리키고, getopts 명령이 실행될 떄 마다 다음 옵션의 index값을 가리킨다.
  -> shell이 처음 실행되면 '1' 값은 1을 가리키고, getopts 명령이 실행될 떄 마다 다음 옵션의 index값을 가리킨다.
   -----> '1' = OPTIND
+ -> 옵션은 옵션인수를 가질 수 있는데, 이때 옵션 스트링에서 해당 옵션 문자 뒤에 ':'을 붙인다. 그러면 getopts명령은 옵션인수 값을 OPTARG 변수에 설정해준다. 
+ -> getopts 명령은 error reporting 과 관련해서 Verbose mode와 Silent mode
