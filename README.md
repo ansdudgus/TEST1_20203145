@@ -7,15 +7,61 @@
 -> getopts 명령에서 사용되는 optstring, varname 과 OPTIND가 있다. 
    --->shell 이 처음 실행되면 OPTIND 값은 1 을 가리키고 getopts 명령이 실행될 때마다 다음 옵션의 index 값을 가리킨다.
 -> 옵션은 옵션인수를 가질 수 있는데, 이때 옵션 스트링에서 해당 옵션 문자 뒤에 : 을 붙인다. 그러면 getopts 명령은 옵션인수 값를 OPTARG 변수에 설정해 준다.
+->명령문에서 사용된 모든 옵션을 처리하기 위해서 다음과 같이 while 과 case 문을 이용합니다.
+
+#!/bin/bash
+
+while getopts "a:bc" opt; do
+  case $opt in
+    a)
+      echo >&2 "-a was triggered!, OPTARG: $OPTARG"
+      ;;
+    b)
+      echo >&2 "-b was triggered!"
+      ;;
+    c)
+      echo >&2 "-c was triggered!"
+      ;;
+  esac
+done
+
+shift $(( OPTIND - 1 ))
+echo "$@"
+..................................
+
+$ ./test.sh -a xyz -bc hello world
+-a was triggered!, OPTARG: xyz
+-b was triggered!
+-c was triggered!
+hello world
+
 -> getopts 명령은 error reporting 과 관련해서 다음과 같은 두 개의 모드를 제공한다.
-   ----> default 는 verbose mode 인데 기본적으로 옵션과 관련된 오류메시지가 표시되므로 스크립트를 배포할 때는 잘 사용하지 않고 대신 silent mode 를 이용한다. 
--> silent mode 를 설정하기 위해서는 옵션 스트링의 맨 앞부분에 : 문자를 추가해준다.
--> OPTIND, OPTARG 변수는 local 변수가 아니므로 필요할 경우 함수 내에서 local 로 설정해 사용해야 합니다.
+   ----> default 는 verbose mode 인데 기본적으로 옵션과 관련된 오류메시지가 표시되므로 스크립트를 배포할 때는 잘 사용하지 않고 대신 silent mode 를 이용한다.
+   ----> Verbose mode
+         invalid 옵션 사용	opt 값을 ? 문자로 설정하고 OPTARG 값은 unset. 오류 메시지를 출력.
+         옵션인수 값을 제공하지 않음	opt 값을 ? 문자로 설정하고 OPTARG 값은 unset. 오류 메시지를 출력.
+   ----> Silent mode
+         invalid 옵션 사용	opt 값을 ? 문자로 설정하고 OPTARG 값은 해당 옵션 문자로 설정
+         옵션인수 값을 제공하지 않음	opt 값을 : 문자로 설정하고 OPTARG 값은 해당 옵션 문자로 설정
+   ----> silent mode 를 설정하기 위해서는 옵션 스트링의 맨 앞부분에 : 문자를 추가해준다.
+-> OPTIND, OPTARG 변수는 local 변수가 아니므로 필요할 경우 함수 내에서 local 로 설정해 사용해야 한다.
+-> getopts 명령은 옵션인수 사용과 관련해서 다음과 같이 주의할 점이 있다.
+   ----> 
+     # 옵션 스트링이 'a:bc' 이면 -a 는 옵션인수를 갖는데요. 옵션인수는 어떤 문자도 올 수 있기 때문에
+     # 다음과 같이 -a 에 옵션인수가 설정되지 않으면 -b 가 -a 의 옵션 인수가 됩니다.
+     // $ command -a -b -c
+
+     # 파일명이나 기타 스트링은 마지막에 와야하는데 그렇지 않을 경우 이후 옵션은 인식되지 않습니다.
+     # 다음의 경우 옵션 스트링이 'abc' 라면 -b -c 옵션은 인식되지 않습니다.
+     //$ command -a foo.c -b -c
+
 -> Long 옵션처리
+   ----> short 옵션은 하나의 문자를 옵션으로 보기 때문에 이후에 p, o, s, i, x 가 모두 붙여쓰기한 옵션명으로 인식을 하게 됩니다. 또 한 가지 문제점은 위의 --long 옵션과 같이 123 옵션인수를 사용하게 되면 그 이후의 옵션은 getopts 에 의해 인식이 되지 않는다.
    ---->  getopts 명령으로 short, long 옵션을 동시에 처리하는 것은 어려우므로 먼저 long 옵션을 처리하고 난후 나머지 short 옵션만 정리하여 getopts 에 넘겨주면 이전과 동일하게 short 옵션을 처리할 수 있다.
    ----> long 옵션을 @ 에서 삭제하는 방법은 while 문을 이용해 인수들을 하나씩 처리하면서 long 옵션이 아닐 경우 특정 변수에 계속해서 append 하는 것입니다. 마지막으로 long 옵션이 제거된 변수를 이용해 set 명령으로 다시 @ 값을 설정한다.
+   ----> long 옵션을 $@ 에서 삭제하는 방법은 while 문을 이용해 인수들을 하나씩 처리하면서 long 옵션이 아닐 경우 특정 변수에 계속해서 append 한다. 마지막으로 long 옵션이 제거된 변수를 이용해 set 명령으로 다시 $@ 값을 설정한다.
    
-(2)getopts
+(2)getopt
 
 -> "/usr/bin/getopt" 에 위치한 외부 명령dlek.
 -> 기본적으로 short, long 옵션을 모두 지원. 옵션 인수를 가질 경우 : 문자를 사용하는 것은 getopts builtin 명령과 동일.
