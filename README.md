@@ -18,7 +18,8 @@
 (2)getopts
 
 -> "/usr/bin/getopt" 에 위치한 외부 명령dlek.
--> 기본적으로 short, long 옵션을 모두 지원합니다. 옵션 인수를 가질 경우 : 문자를 사용하는 것은 getopts builtin 명령과 동일gkek.
+-> 기본적으로 short, long 옵션을 모두 지원. 옵션 인수를 가질 경우 : 문자를 사용하는 것은 getopts builtin 명령과 동일.
+-> getopts option 넣기. while + getopts, 옵션은 $opt 에 loop 하나씩 들어간다.
 -> short 옵션 지정은 -o 옵션으로 합니다. ':' 에 따라서 옵션 -a 는 옵션 인수를 갖습니다. => getopt -o a:bc
 -> long 옵션 지정은 -l 옵션으로 하고 옵션명은 ',' 로 구분합니다. ':' 에 따라서 옵션 --path 와 --name 은 옵션 인수를 갖습니다.
    ---->명령 라인에서 옵션 인수 사용은 "--name foo" 또는 "--name=foo" 두 가지 모두 가능합니다. => getopt -l help,path:,name: 
@@ -36,11 +37,12 @@
     ----> 패턴 스페이스는 sed가 파일을 라인단위로 읽을 때 그 읽힌 라인이 저장되는 임시공간
     ----> 홀드 스페이스는 패턴 스페이스와 달리 원할 때 이전 행을 불러와서 사용할 수 있는 버퍼이다. 
     
- -> "sed -n '*,*p employees'" => 컴마는 주소범위, p는 출력을 의미한다.
+ -> "sed -n '*,*p employees'" => 컴마는 주소범위, p는 출력을 의미한다. -n은 자동 출력을 하지 않게 해준다.
  -> "sed -n -e '1p' -e '*,$p employees'" => 여러개의 편집 명령 실행 시 -e 옵션을 쓴다.
  -> "sed -n '/^a037185a/p' employees" => a037185a로 시작(특정단어로 시작하는 행들만 추출시에는 ^제외) 
      ----> '^'는 메타문자로 '시작'을 의미한다.특정단어 포함하는 행들을 뽑을 떄에는 없이 검색한다.
-     
+ -> "sed -n -e '1p' -e '8,$p'" => e 옵션을 이용해서 여러개 사용하여 command를 준다.   
+ -> "sed -n -e '2,6d' -e '1,$p'" =>  2~6번째 줄을 삭제하고 나머지 모든 내용을 출력
  -> "sed '/^$/d' employees" => employees파일에서 빈 라인들을 지운 후 내용을 출력한다.
  -> "sed '/^$/d' employees" > new employees => employees파일에서 빈 라인들을 삭제한 후 결과를 new_employees라는 파일명으로 저장
  -> "sed '/^ *$/d' employees" > new employees => employees파일에서 빈 라인들이나 공백으로 채워진 행을 삭제한 후 new_employees라는 파일명으로 저장
@@ -48,6 +50,13 @@
  -> "sed 's/a037185a/DEVELOPER/g' employees" s는 치환할 때 사용하는 커맨트, 같이 쓰는 g플래그는 치환이 행에서 전체를 대상으로 이루어진다는 뜻
  -> "sed 's/a037185a/DEVELOPER/g' employees"
  -> "sed 's/a037185a/DEVELOPER/gi' employees" i는 변경대상 단어를 찾을 때 대소문자를 무시한다는 플래그이다.
+ -> "sed -n -e 's/^let/LET/gi' -e '1,$p'" let_it_go.txt => Let으로 시작하는 줄의 첫 Let를 LET으로 바꾼다.
+ -> "sed -n -e 's/anyway.$/ANYWAY/gi' -e '1,$p' let_it_go.txt" => 끝나는 문자열은 끝에 $를 붙여줘서 검색하면 됩니다. Anyway. 으로 끝나는 줄의 Anyway를 대문자로 바꾸려면 아래와 같은 command를 사용하면 된다.
+
+-> 문자열을 추가하는 방법에는 두 가지 정도가 존재한다. 해당 문자열 아래에 추가하느냐(Append) 아니면 이 전 줄에 삽입하느냐(Insert)가 있는데, 기본적인 형식은 아래의 command처럼 사용한다.
+  /찾을 문자열/a\다음 출에 추가할 문자열
+  /찾을 문자열/i\위에 삽입할 문자열
+-> "sed -n -e '/^Let/c\Let it go X2' -e '1,$p' let_it_go.txt" => ^를 사용하여 Let으로 시작하는 줄들을 찾고 c 커맨드로 바꿔질 줄 내용을 입력.
 
 (4) awk
  -> 파일로부터 레코드(record)를 선택하고, 선택된 레코드에 포함된 값을 조작하거나 데이터화하는 것을 목적으로 사용한다.
