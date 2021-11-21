@@ -8,6 +8,9 @@
    --->shell 이 처음 실행되면 OPTIND 값은 1 을 가리키고 getopts 명령이 실행될 때마다 다음 옵션의 index 값을 가리킨다.
 -> 옵션은 옵션인수를 가질 수 있는데, 이때 옵션 스트링에서 해당 옵션 문자 뒤에 : 을 붙인다. 그러면 getopts 명령은 옵션인수 값를 OPTARG 변수에 설정해 준다.
 ->명령문에서 사용된 모든 옵션을 처리하기 위해서 다음과 같이 while 과 case 문을 이용합니다.
+   ---> while getopts "a:b:h" opt
+       보통 다음과 같은 형식을 주로 사용하고 getopt는 첫번째 파라미터로 옵션으로 사용될 문자열을 입력 받고 다음에는 옵션으로 활용되는 변수를 사용합니다.
+       getopt를 사용할 때 주의해야 할 점은 ":" 입니다. 기존적으로 getopt는 한개의 문자만을 구분자로 사용하며 사용할 문자열 뒤에 ":"을 붙이게 되면 뒤에Value가 붙게 된다는 것을 의미
 
 #!/bin/bash
 
@@ -75,6 +78,16 @@ hello world
 -> getopts builtin 명령의 경우 옵션들 중간에 파일명이 온다거나 하면 이후의 옵션은 옵션으로 인식이 되지 않는데 getopt 명령의 경우는 올바르게 구분하여 정렬해 준다.
 -> 다양한 입력 값이 존재할 경우 사용자와 개발자의 편의를 보장해주고, 스크립트를 보다 체계적으로 관리할 수 있기 때문에 사용한다.
 
+-> "getopt_test.sh -h" => -h 옵션"을 이용해서 사용법을 확인합니다. 
+-> 인자가 있는 옵션
+   getopt_test.sh -m SET
+   getopt_test.sh -u jungfo
+   getopt_test.sh -m SET -u jungfo
+-> 인자가 없는 오션
+   getopt_test.sh -f -q -v -d -g
+   getopt_test.sh -fqvdg
+   getopt_test.sh -m GET -u leo -fqvdg
+   
 (3) sed (streamlined editor)
  -> 명령행에서 파일을 인자로 받아 명령어를 통해 작업한 후 결과를 화면으로 확인 하는 방식
  -> sed편집기는 원본ㅇㄹ 손상하지 않는다. 쉘 리다이렉션을 이용해 편집결과를 저장하기 전까지는 파일에 아무런 변경도 가하지 않는다.
