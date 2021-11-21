@@ -11,3 +11,4 @@ short 옵션 지정은 -o, long 옵션 지정은 -l
  getopt -o a:bc -> ':' 에 따라서 옵션 -a는 옵션 인수를 갖는다.
  ':' 에 따라서 옵션 --path와 --name은 옵션 인수를 갖는다.
  getopt -l help,path:,name: ->':' 에 따라서 옵션 --path와 --name은 옵션 인수를 갖는다.
+ 명령 마지막에는 -- 을 붙인다. 
