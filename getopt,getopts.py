@@ -23,3 +23,5 @@ short 옵션 지정은 -o, long 옵션 지정은 -l
   -----> '1' = OPTIND
  -> 옵션은 옵션인수를 가질 수 있는데, 이때 옵션 스트링에서 해당 옵션 문자 뒤에 ':'을 붙인다. 그러면 getopts명령은 옵션인수 값을 OPTARG 변수에 설정해준다. 
  -> getopts 명령은 error reporting 과 관련해서 Verbose mode와 Silent mode
+  ----> default는 verbose mode인데 기본적으로 옵션과 관련된 오류메세지만 표시 되므로 스크립트를 배포할 때 잘 사용되지 않고 Silent mode를 이용한다.
+ -> silent mode를 사용하기 위해서는 옵션 스트링의 맨 앞부분에 : 문자를 추가해준다.
